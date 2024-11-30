@@ -1,0 +1,234 @@
+# when using the default proxy server port
+local_backend: true
+backend:
+  name: git-gateway
+  branch: main # Branch to update (optional; defaults to master)
+publish_mode: editorial_workflow
+media_folder: public/img
+public_folder: /img
+
+collections:
+  - name: 'page'
+    label: 'Page'
+    description: 'All general pages.'
+    folder: 'content/page'
+    format: 'frontmatter'
+    create: true # Allow users to create new documents in this collection
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    preview_path: page/{{slug}} # {{slug}} will compile to '2000-01-my-new-post'
+    editor:
+      preview: false
+    fields:
+      - { label: 'Layout', name: 'layout', widget: 'hidden', default: 'default' }
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Subtitle', name: 'subtitle', widget: 'string', required: false, hint: 'Fill in a subtitle. Leave blank if you do not want one.'  }
+      - { label: 'Body', name: 'body', widget: 'markdown', hint: 'The main content for this item.'  }
+      - label: 'Tags'
+        name: 'tags'
+        widget: 'relation'
+        collection: 'tags'
+        search_fields: ['title']
+        value_field: 'title'
+        display_fields: ['title']
+        multiple: true
+        required: false
+        hint: 'Refer to this tag for categorisation. Be sure to add your corresponding tag in the system first.'      
+      - label: 'Image gallery'
+        name: 'imagegallery'
+        widget: 'object'
+        collapsed: true
+        hint: 'Add an image to this item. Images can be shown in the layout of a gallery or a grid. This function is set "off" by default - so turn it on if you want to use it..'
+        fields:
+         - { label: 'Show Gallery', name: 'showgallery', widget: 'boolean', default: false, hint: 'Activate an image gallery on this page.', required: false}
+         - { label: 'Carousel / grid', name: 'carouselgrid', widget: 'select', options: ['carousel', 'grid'], default: 'carousel', hint: 'Show this gallery as a carousel or as a grid', required: false }
+         - { label: 'Gallery title', name: 'gallerytitle', widget: 'string', required: false}
+         - { label: 'Gallery text', name: 'gallerytext', widget: 'markdown', required: false, hint: 'Add a text on this image gallery.'}
+         - { label: 'GalleryImages',
+              name: 'galleryImages',
+              widget: 'list',
+              summary: '{{fields.image}}',
+              field: {label: Image, name: Galleryimage, widget: image},
+            }
+      - { label: 'Featured Image', name: 'thumbnail', widget: 'image', hint: 'Choose a picture from the media library for this item. This picture is used as a reference to the item in different layouts.' }      
+      - { label: 'Publish Date', name: 'date', widget: 'datetime', hint: 'Date of publication for this item. Click on "Now" to set the publication date to the cuurent one.' }
+      - { label: 'In/Excluded and position in the navigation', name: 'numbernavigation', widget: 'number', value_type: 'int', min: 0, max: 50, step: 1, hint: 'Set this number higher than 0 to activate this item in the navigation. Leaving it on to 0 will exclude this item. The higher the number, the higher this item will be placed in the main navigation. The highest value is 50', required: false }
+      - { label: 'Layout', 
+          name: 'layoutpage', 
+          widget: 'select', 
+          options: ["layout1", "layout2", "layout3", "layout4", "layout5"], 
+          required: false, default: ["layout1"],
+          hint: 'Choose a layout for this item.'
+          }
+      - { label: 'Description', name: 'description', widget: 'markdown', required: false, hint: 'Descriptions are used in overviews.' }
+      - { label: 'Introduction', name: 'introduction', widget: 'markdown',  minimal: true, required: false, hint: 'This is an optional field that is not used in any of the layouts.' }
+      - { label: 'Promoted in lists (experimental)', name: 'promoted', widget: 'number', default: '0', hint: 'The higher the number, the higher this item will be placed in the lists and overviews.', required: false}   
+
+  - name: 'blog'
+    label: 'Blog'
+    description: 'All blog entries.'
+    folder: 'content/blog'
+    format: 'frontmatter'
+    create: true
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    preview_path: blog/{{slug}} # {{slug}} will compile to '2000-01-my-new-post'
+    editor:
+      preview: false
+    summary: 'Version: {{version}} - {{title}} {{commit_author}}'  
+    fields:
+      - { label: 'Layout', name: 'layout', widget: 'hidden', default: 'default' }
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Subtitle', name: 'subtitle', widget: 'string', required: false, hint: 'Fill in a subtitle. Leave blank if you do not want one.'  }
+      - { label: 'Body', name: 'body', widget: 'markdown', hint: 'The main content for this item.'  }
+      - {  label: 'Tags',
+           name: 'tags',
+           widget: 'relation',
+           collection: 'tags',
+           search_fields: ['title'],
+           value_field: 'title',
+           display_fields: ['title'],
+           multiple: true,
+           required: false,
+           hint: 'Refer to this tag for categorisation. Be sure to add your corresponding tag in the system first.' }   
+      - { label: 'Featured Image', name: 'thumbnail', widget: 'image', required: false, hint: 'Choose a picture from the media library for this item. This picture is used as a reference to the item in different layouts.' }
+      - { label: 'Publish Date', name: 'date', widget: 'datetime' }
+      - { label: 'Author', name: 'author', widget: 'string', required: false, hint: 'The author of the blog entry.' }
+      - { label: 'In/Excluded and position in the navigation', name: 'numbernavigation', widget: 'number', value_type: 'int', min: 0, max: 50, step: 1, hint: 'Set this number higher than 0 to activate this item in the navigation. Leaving it on to 0 will exclude this item. The higher the number, the higher this item will be placed in the main navigation. The highest value is 50', required: false }
+      - { label: 'Layout', 
+          name: 'layoutblog', 
+          widget: 'select', 
+          options: ["layout1", "layout2", "layout3", "layout4", "layout5"], 
+          required: false, default: ["layout1"],
+          hint: 'Choose a layout for this blog entry.'
+          }      
+      - { label: 'Description', name: 'description', widget: 'markdown', required: false, hint: 'Descriptions are used in overviews.' }
+      - { label: 'Introduction', name: 'introduction', widget: 'markdown', minimal: true, required: false, hint: 'This is an optional field that is not used in any of the layouts.' }
+      - { label: 'Promoted in lists (experimental)', name: 'promoted', widget: 'number', default: '0', hint: 'Make this item appear higher in the overview lists.', required: false}
+
+  - name: 'collection'
+    label: 'Collection'
+    description: 'All general collections.'
+    folder: 'content/collection'
+    format: 'frontmatter'
+    create: true # Allow users to create new documents in this collection
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    preview_path: collection/{{slug}} # {{slug}} will compile to '2000-01-my-new-post'
+    editor:
+      preview: false
+    fields:
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Subtitle', name: 'subtitle', widget: 'string', required: false, hint: 'Fill in a subtitle. Leave blank if you do not want one.'  }
+      - { label: 'Body', name: 'body', widget: 'markdown', hint: 'The main content for this item.'  }
+      - { label: 'Related Page',
+          name: 'related_page',
+          widget: 'relation',
+          collection: 'page',
+          search_fields: ['title'],
+          value_field: "{{slug}}",
+          display_fields: ['title'],
+          multiple: true,
+          required: false,
+          hint: 'Select a related page from the pages folder.'}    
+      - { label: 'Tags',
+          name: 'reftags',
+          widget: 'relation',
+          collection: 'tags',
+          search_fields: ['title'],
+          value_field: 'title',
+          display_fields: ['title'],
+          multiple: true,
+          required: false,
+          hint: 'Refer to this tag for categorisation. Be sure to add your corresponding tag in the system first.' }      
+      - label: 'Image gallery'
+        name: 'imagegallery'
+        widget: 'object'
+        collapsed: true
+        hint: 'Add an image to this item. Images can be shown in the layout of a gallery or a grid. This function is set "off" by default - so turn it on if you want to use it..'
+        fields:
+         - { label: 'Show Gallery', name: 'showgallery', widget: 'boolean', default: true, hint: 'Activate an image gallery on this collection.', required: false}
+         - { label: 'Carousel / grid', name: 'carouselgrid', widget: 'select', options: ['carousel', 'grid'], default: 'carousel', hint: 'Show this gallery as a carousel or as a grid', required: false }
+         - { label: 'Gallery title', name: 'gallerytitle', widget: 'string', required: false}
+         - { label: 'Gallery text', name: 'gallerytext', widget: 'markdown', required: false, hint: 'Add a text on this image gallery.'}
+         - { label: 'GalleryImages',
+              name: 'galleryImages',
+              widget: 'list',
+              summary: '{{fields.image}}',
+              field: {label: Image, name: Galleryimage, widget: image},
+            }
+      - { label: 'Featured Image', name: 'thumbnail', widget: 'image', required: false, hint: 'Choose a picture from the media library for this item. This picture is used as a reference to the item in different layouts.' } 
+      - { label: 'Publish Date', name: 'date', widget: 'datetime', hint: 'Date of publication for this item. Click on "Now" to set the publication date to the cuurent one.' }
+      - { label: 'In/Excluded and position in the navigation', name: 'numbernavigation', widget: 'number', value_type: 'int', min: 0, max: 50, step: 1, hint: 'Set this number higher than 0 to activate this item in the navigation. Leaving it on to 0 will exclude this item. The higher the number, the higher this item will be placed in the main navigation. The highest value is 50', required: false }
+      - { label: 'Layout', 
+                name: 'layout', 
+                widget: 'select', 
+                options: ["layout1", "layout2", "layout3", "layout4", "layout5"], 
+                required: false, default: ["layout1"],
+                hint: 'Choose a layout for this item.'
+                }
+      - { label: 'Description', name: 'description', widget: 'markdown', required: false, hint: 'Descriptions are used in overviews.' }
+      - { label: 'Introduction', name: 'introduction', widget: 'markdown', minimal: true, required: false, hint: 'This is an optional field that is not used in any of the layouts.' }
+
+  - name: 'settings'
+    label: 'Settings'
+    description: 'Settings for the application.'
+    files:
+      - name: 'general'
+        label: 'Site Settings'
+        file: '/public/_data/settings.json'
+        description: 'General settings for the application: title, subtitle, copyright ...'
+        fields:
+          - { label: 'Global title', name: 'site_title', widget: 'string' }
+          - { label: 'Global subtitle', name: 'site_subtitle', widget: 'string' }
+          - { label: 'Copyright indication', name: 'copyright', widget: 'string' }
+      - name: 'homepage'
+        label: 'Homepage Settings'
+        file: '/public/_data/homepage.json'
+        description: 'Settings for the homepage'
+        fields:
+          - { label: 'Featured Image', name: 'thumbnail', widget: 'image', required: false, hint: 'Choose a picture from the media library for this item. This picture is used as a reference to the item in different layouts.' } 
+          - { label: 'Redirect homepage',
+              name: 'homepageredirect',
+              widget: 'relation',
+              collection: 'page',
+              search_fields: ['title'],
+              value_field: '{{slug}}',
+              display_fields: ['title'],
+              multiple: true,
+              required: false,
+              hint: 'Indicate the link to a page that you want to use as homepage.'}
+      - name: 'menu'
+        label: 'Menus'
+        file: '/public/_data/menus.json'
+        fields:
+          - label: 'Main Menu Settings'
+            name: mainmenu
+            widget: 'object'
+            fields:
+              - name: 'mainavigation_on_off'
+                label: 'Main navigation on / off'
+                widget: 'boolean'
+                default: true
+                hint: 'Turn the main navigation on or off'
+          - label: 'Sub Menu Settings'
+            name: submenu
+            widget: 'object'
+            fields:
+              - name: 'excludefromnavigation'
+                label: 'position of the page items in the navigation'
+                widget: 'select'
+                options:
+                  - { label: 'Show all items from the navigation.', value: 1 }
+                  - { label: 'Exclude all collection items from the navigation.', value:  2}
+                  - { label: 'Exclude all page items from the navigation.', value: 3 }
+                  - { label: 'Exclude all blog items from the navigation.', value: '3' }
+                default: ["Show all items from the navigation."]
+                hint: 'Exclude from the navigation.'
+              
+
+  - name: 'tags'
+    label: 'Tags (experimental)'
+    folder: 'content/tags'
+    create: true
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    fields:
+      - { label: 'Tag', name: 'title', widget: 'string' }
+      - { label: 'Description', name: 'description', widget: 'text', required: false }

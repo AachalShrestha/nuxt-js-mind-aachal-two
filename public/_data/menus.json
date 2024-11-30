@@ -1,0 +1,14 @@
+{
+  "submenu": {
+    "pagenavigation_on_off": true,
+    "itemnavigation_on_off": false,
+    "blognavigation_on_off": true,
+    "foldernavigation_on_off": true,
+    "collectionnavigation_on_off": true,
+    "position of the page items in the navigation": 2,
+    "excludefromnavigation": 1
+  },
+  "mainmenu": {
+    "mainavigation_on_off": true
+  }
+}
